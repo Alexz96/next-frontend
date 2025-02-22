@@ -1,5 +1,5 @@
 import { AssetShow } from "@/components/AssetShow";
-import { Wallet } from "@/models";
+import { Asset } from "@/models";
 import {
   Button,
   Table,
@@ -10,43 +10,41 @@ import {
   TableRow,
 } from "flowbite-react";
 
-export async function getMyWallet(walletId: string): Promise<Wallet> {
+export async function getAssets(): Promise<Asset[]> {
   // recomendado o uso do fetch pois tem melhorias feitas pela Vercel
-  const response = await fetch(`http://localhost:3000/wallets/${walletId}`);
+  const response = await fetch(`http://localhost:3000/assets`);
   return response.json();
 }
 
-export default async function MyWalletListPage({
+export default async function AssetsListPage({
   searchParams,
 }: {
   searchParams: Promise<{ wallet_id: string }>;
 }) {
   const { wallet_id } = await searchParams;
 
-  const wallet = await getMyWallet(wallet_id);
-  console.log("Carteira: ", wallet);
+  const assets = await getAssets();
+  console.log("Ativos: ", assets);
 
   return (
     <div className="flex flex-col space-y-5 flex-grow">
       <article className="format">
-        <h1>Minha carteira</h1>
+        <h1>Ativos</h1>
       </article>
       <div className="overflow-y-auto w-full">
         <Table className="w-full max-w-full table-fixed">
           <TableHead>
             <TableHeadCell>Ativo</TableHeadCell>
             <TableHeadCell>Cotação</TableHeadCell>
-            <TableHeadCell>Quantidade</TableHeadCell>
             <TableHeadCell>Comprar/Vender</TableHeadCell>
           </TableHead>
           <TableBody>
-            {wallet.assets.map((walletAsset, key) => (
+            {assets.map((asset, key) => (
               <TableRow key={key}>
                 <TableCell>
-                  <AssetShow asset={walletAsset.asset} />
+                  <AssetShow asset={asset} />
                 </TableCell>
-                <TableCell>R$ {walletAsset.asset.price}</TableCell>
-                <TableCell>{walletAsset.shares}</TableCell>
+                <TableCell>R$ {asset.price}</TableCell>
                 <TableCell>
                   <Button color="light">Comprar/vender</Button>
                 </TableCell>
