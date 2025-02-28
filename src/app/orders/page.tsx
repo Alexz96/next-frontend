@@ -1,7 +1,8 @@
 import { AssetShow } from "@/components/AssetShow";
 import { OrderStatusBadge } from "@/components/OrderStatusBadge";
 import { OrderTypeBadge } from "@/components/OrderTypeBadge";
-import { Order } from "@/models";
+import { WalletList } from "@/components/WalletList";
+import { getMyWallet, getOrders } from "@/queries/queries";
 import {
   Table,
   TableBody,
@@ -11,20 +12,23 @@ import {
   TableRow,
 } from "flowbite-react";
 
-export async function getOrders(walletId: string): Promise<Order[]> {
-  // recomendado o uso do fetch pois tem melhorias feitas pela Vercel
-  const response = await fetch(
-    `http://localhost:3000/orders?walletId=${walletId}`
-  );
-  return response.json();
-}
-
 export default async function OrdersListPage({
   searchParams,
 }: {
   searchParams: Promise<{ wallet_id: string }>;
 }) {
   const { wallet_id } = await searchParams;
+
+  if (!wallet_id) {
+    return <WalletList />;
+  }
+
+  const wallet = await getMyWallet(wallet_id);
+  console.log("Carteira: ", wallet);
+
+  if (!wallet) {
+    return <WalletList />;
+  }
 
   const orders = await getOrders(wallet_id);
   console.log("Ordens: ", orders);
@@ -52,10 +56,10 @@ export default async function OrdersListPage({
                 <TableCell>R$ {order.price}</TableCell>
                 <TableCell>{order.shares}</TableCell>
                 <TableCell>
-                    <OrderTypeBadge type={order.type} />
+                  <OrderTypeBadge type={order.type} />
                 </TableCell>
                 <TableCell>
-                    <OrderStatusBadge status={order.status} />
+                  <OrderStatusBadge status={order.status} />
                 </TableCell>
               </TableRow>
             ))}

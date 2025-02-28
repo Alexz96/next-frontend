@@ -1,5 +1,5 @@
 import { AssetShow } from "@/components/AssetShow";
-import { Asset } from "@/models";
+import { WalletList } from "@/components/WalletList";
 import {
   Button,
   Table,
@@ -9,12 +9,7 @@ import {
   TableHeadCell,
   TableRow,
 } from "flowbite-react";
-
-export async function getAssets(): Promise<Asset[]> {
-  // recomendado o uso do fetch pois tem melhorias feitas pela Vercel
-  const response = await fetch(`http://localhost:3000/assets`);
-  return response.json();
-}
+import { getAssets, getMyWallet } from "@/queries/queries";
 
 export default async function AssetsListPage({
   searchParams,
@@ -22,6 +17,17 @@ export default async function AssetsListPage({
   searchParams: Promise<{ wallet_id: string }>;
 }) {
   const { wallet_id } = await searchParams;
+
+  if (!wallet_id) {
+    return <WalletList />;
+  }
+
+  const wallet = await getMyWallet(wallet_id);
+  console.log("Carteira: ", wallet);
+
+  if (!wallet) {
+    return <WalletList />;
+  }
 
   const assets = await getAssets();
   console.log("Ativos: ", assets);
