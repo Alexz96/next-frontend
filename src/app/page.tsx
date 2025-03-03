@@ -53,6 +53,7 @@ export default async function MyWalletListPage({
                 <TableCell>{walletAsset.shares}</TableCell>
                 <TableCell>
                   <Button
+                    className="w-fit"
                     color="light"
                     as={Link}
                     href={`/assets/${walletAsset.asset.symbol}?wallet_id=${wallet_id}`}
