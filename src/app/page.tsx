@@ -1,4 +1,5 @@
 import { AssetShow } from "@/components/AssetShow";
+import AssetsSync from "@/components/AssetsSync";
 import { WalletList } from "@/components/WalletList";
 import { getMyWallet } from "@/queries/queries";
 import {
@@ -66,6 +67,11 @@ export default async function MyWalletListPage({
           </TableBody>
         </Table>
       </div>
+      <AssetsSync
+        assetsSymbols={wallet.assets.map(
+          (walletAsset) => walletAsset.asset.symbol
+        )}
+      />
     </div>
   );
 }
